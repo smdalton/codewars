@@ -19,7 +19,12 @@ def add_row(matx, row1, row2):
     if row1 > 3 or row2 > 3: return 'Row outside bounds add_row'
     matx[row2] = [x + y for x, y in zip(matx[row1], matx[row2])]
 
-
+def add_mult_row(matx, row1, row2, coef):
+    '''
+    adds multiple of first row index to second row index
+    '''
+    row_to_add = [x * coef for x in matx[row1]]
+    matx[row2] = [x + y for x, y in zip(row_to_add, matx[row2])]
 def add_mult_row(matx, row1, row2, coef):
     '''
     adds multiple of first row index to second row index
@@ -31,7 +36,6 @@ def num_zeros_in_row(row):
     return row[:3].count(0)
     # want to skip the numeric value as a zero
 
-
 # returns the index of all values that are not zero
 def get_non_zero_index(row):
     # check to see if the solution has non-zero solutions
@@ -40,18 +44,15 @@ def get_non_zero_index(row):
             if row[i] == 1:
                 return i
     else:
-        print('number of zeros present in row != 1', row)
+        print('number of non-zero values present in row != 1', row)
         return -1
-
 
 # test to see if the matrix is in rref
 def is_reduced(matx):
-    indexes = [0,0,0]
-    for row in matx:
-        index = get_non_zero_index(row)
-        if index:
-            pass
-    return indexes == [1,1,1]
+    result = []
+    for i in range(len(matx)):
+        result.append(matx[0][i]+matx[1][i]+matx[2][i])
+    return result == [1,1,1]
 
 def test_get_non_zero_index():
     test_matx = [
@@ -59,13 +60,15 @@ def test_get_non_zero_index():
         [0, 1, 0, 0],
         [0, 0, 1, 0],
         [0, 0, 0, 1],
-        [0, 0, 0, 0]
+        [0, 0, 0, 0],
+        [0, 0, 1, 1],
+        [0, 1, 1, 1],
     ]
     results = []
     for row in test_matx:
         results.append(get_non_zero_index(row))
-
-    assert results == [0,1,2,-1,-1]
+    print(results)
+    assert results == [0,1,2,-1,-1, 2, -1]
 
 def test_is_reduced():
     matx1 = [[1,0,0,0], [0,1,0,0], [0,0,1,0]]
@@ -79,10 +82,10 @@ def test_is_reduced():
         results.append(is_reduced(matrix))
 
     assert results == [
-        [True,False, False, False],
-        [False,False,False,False],
-        [False,False,False,False],
-        [False,False,False,False],
+        True,
+        False,
+        False,
+        False,
     ]
 
 def test_add_row():
@@ -92,7 +95,7 @@ def test_add_row():
         [8, 8, 8],
     ]
 
-    add_row(matx, 0, 1)
+    add_row(test_matx, 0, 1)
     assert test_matx == [
         [1, 1, 1],
         [6, 6, 6],
@@ -139,18 +142,55 @@ def test_num_zeros_in_row():
     print(num_zeros_in_row(row), row)
     assert num_zeros_in_row(row) == 0
 
-
 def tests():
-    #test_swap()
-    #test_mult()
-    #test_add_row()
-    #test_num_zeros_in_row()
-    #print('tests complete')
-    #test_is_reduced()
+    test_swap()
+    test_mult()
+    test_add_row()
+    test_num_zeros_in_row()
+    test_is_reduced()
     test_get_non_zero_index()
+    test_is_reduced()
+    print('tests complete')
 
-tests()
-# def mat3solve(matx):
+#tests()
+
+
+
+#def mat3solve(matx):
 # all operations are assumed to be zero indexed
-# swap two rows of the matrix
 
+
+test_matx = [
+    [2,1,1,8],
+    [0,1,4,7],
+    [5,0,3,13]
+]
+solution = [2,3,1]
+
+def sort_by_zeros(matx):
+    matx.sort(key=lambda x: x[:3].count(0))
+
+def test_mat3_solve(matx):
+
+    # get the largest value in the matrix to the top row
+    matx.sort(key=lambda x: x[0], reverse=True)
+    # get the second row and see if it's first value is not = zero
+
+
+
+    print(matx)
+
+    # select a non leading zero row and perform operations to zero it out
+
+
+test_mat3_solve(test_matx)
+
+
+def move_zeros(array):
+    zero_count = array.count(int(0))
+    array = [x for x in array if x != 0]
+
+    for i in range(0, zero_count):
+        array.append(0)
+
+    return array
